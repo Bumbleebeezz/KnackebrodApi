@@ -18,10 +18,31 @@ public class StudentRepository(KnackeBrodDbContext context)
     public void AddStudent(Student student)
     {
         context.students.Add(student);
+
+        context.SaveChanges();
     }
 
-    public void UpdateStudentLastName(int id, string updatedLastName)
-    {
+    public async Task UpdateStudentLastName(int id, string updatedLastName)
+    { 
+        var updateStudentLastName =
+        await context.students.FirstOrDefaultAsync(s => s.Id == id);
 
+        if (updateStudentLastName is null)
+        {
+            return; 
+        }
+
+        updateStudentLastName.LastName = updatedLastName;
+        
+        context.SaveChanges();
+    }
+
+    public void RemoveStudent(int id)
+    {
+        var student = context.students.FirstOrDefault(s => s.Id == id);
+
+        context.students.Remove(student);
+
+        context.SaveChanges();
     }
 }
