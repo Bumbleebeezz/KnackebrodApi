@@ -10,7 +10,8 @@ namespace KnackebrodApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDbContext<KnackeBrodDbContext>(options => options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SchoolDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"));
+            var connectionString = builder.Configuration.GetConnectionString("SchoolDb");
+            builder.Services.AddDbContext<KnackeBrodDbContext>(options => options.UseSqlServer(connectionString));
 
             builder.Services.AddScoped<StudentRepository>();
 
@@ -22,12 +23,12 @@ namespace KnackebrodApi
 
             app.MapGet("/students", (StudentRepository repo) =>
             {
-                repo.GetAllStudents();
+                return repo.GetAllStudents();
             });
 
-            app.MapGet("/students/{id}", (StudentRepository repo, int id) =>
+            app.MapGet("/students/{id}", async (StudentRepository repo, int id) =>
             {
-                var results = repo.GetStudentId(id);
+                var results = await repo.GetStudentId(id);
                 if (results is null)
                 {
                     return Results.BadRequest("Bananaws");
@@ -40,7 +41,7 @@ namespace KnackebrodApi
             {
                 var existingStudent = await repo.GetStudentId(student.Id);
 
-                if (existingStudent != null)
+                if (existingStudent is not null)
                 {
                     return Results.BadRequest();
                 }

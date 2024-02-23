@@ -5,37 +5,37 @@ namespace KnackebrodApi.DataAccess;
 
 public class StudentRepository(KnackeBrodDbContext context)
 {
-    public List<Student> GetAllStudents()
+    public async Task<IEnumerable<Student>> GetAllStudents()
     {
-        return context.students.ToList();
+        return context.students;
     }
 
-    public async Task<Student> GetStudentId(int id)
+    public async Task<Student?> GetStudentId(int id)
     {
-        return await context.students.FirstOrDefaultAsync(s => s.Id == id);
+        return await context.students.FindAsync(id);
     }
 
-    public void AddStudent(Student student)
+    public async Task AddStudent(Student student)
     {
-        context.students.Add(student);
+        await context.students.AddAsync(student);
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
     public async Task UpdateStudentLastName(Student student, string updatedLastName)
     { 
 
-        student.LastName = updatedLastName;
+       student.LastName = updatedLastName;
         
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
-    public void RemoveStudent(int id)
+    public async Task RemoveStudent(int id)
     {
         var student = context.students.FirstOrDefault(s => s.Id == id);
 
         context.students.Remove(student);
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 }
