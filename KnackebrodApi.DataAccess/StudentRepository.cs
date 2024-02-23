@@ -22,17 +22,10 @@ public class StudentRepository(KnackeBrodDbContext context)
         context.SaveChanges();
     }
 
-    public async Task UpdateStudentLastName(int id, string updatedLastName)
+    public async Task UpdateStudentLastName(Student student, string updatedLastName)
     { 
-        var updateStudentLastName =
-        await context.students.FirstOrDefaultAsync(s => s.Id == id);
 
-        if (updateStudentLastName is null)
-        {
-            return; 
-        }
-
-        updateStudentLastName.LastName = updatedLastName;
+        student.LastName = updatedLastName;
         
         context.SaveChanges();
     }

@@ -21,6 +21,7 @@ namespace KnackebrodApi
             {
                 repo.GetAllStudents();
             });
+
             app.MapGet("/students/{id}", (StudentRepository repo, int id) =>
             {
                var results = repo.GetStudentId(id);
@@ -31,8 +32,32 @@ namespace KnackebrodApi
 
                return Results.Ok(results);
             });
-            app.MapPost("/studentpost", (StudentRepository repo, Student student) =>
+
+            app.MapPost("/studentpost", async (StudentRepository repo, Student student) =>
             {
+                var existingStudent = await repo.GetStudentId(student.Id);
+
+                if (existingStudent != null)
+                {
+                    return Results.BadRequest();
+                }
+                repo.AddStudent(student);
+
+                return Results.Ok();
+
+            });
+
+            app.MapPatch("/student/{id}", async (StudentRepository repo, int id, string inputName) =>
+            {
+                var existingStudent = await repo.GetStudentId(id);
+
+                if (existingStudent is null)
+                {
+                    return Results.BadRequest();
+                }
+
+                repo.UpdateStudentLastName(existingStudent, inputName);
+                return Results.Ok();
 
             });
 
