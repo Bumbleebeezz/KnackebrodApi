@@ -1,5 +1,6 @@
 using KnackebrodApi.DataAccess;
 using KnackebrodApi.DataAccess.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace KnackebrodApi
 {
@@ -9,7 +10,7 @@ namespace KnackebrodApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDbContext<KnackeBrodDbContext>();
+            builder.Services.AddDbContext<KnackeBrodDbContext>(options => options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=SchoolDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"));
 
             builder.Services.AddScoped<StudentRepository>();
 
