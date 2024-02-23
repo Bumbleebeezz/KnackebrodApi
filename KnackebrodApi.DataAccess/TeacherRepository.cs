@@ -22,17 +22,9 @@ public class TeacherRepository(KnackeBrodDbContext context)
         context.SaveChanges();
     }
 
-    public async Task UpdateTeacherLastName(int id, string updatedLastName)
+    public async Task UpdateTeacherLastName(Teacher teacher, string updatedLastName)
     {
-        var updateTeacherLastName =
-            await context.teachers.FirstOrDefaultAsync(t => t.Id == id);
-
-        if (updateTeacherLastName is null)
-        {
-            return;
-        }
-
-        updateTeacherLastName.LastName = updatedLastName;
+        teacher.LastName = updatedLastName;
 
         context.SaveChanges();
     }
